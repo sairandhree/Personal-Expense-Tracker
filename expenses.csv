@@ -1,0 +1,4 @@
+{'date': '2024-12-21', 'category': 'Food', 'amount':11, 'description':'aa' }
+{'date': '2024-12-21', 'category': 'Work', 'amount':22, 'description':'bb' }
+{'date': '2024-12-21', 'category': 'Work', 'amount':33, 'description':'cc' }
+{'date': '2024-12-21', 'category': 'Fun', 'amount':44, 'description':'dd' }
