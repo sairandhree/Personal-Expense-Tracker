@@ -1,7 +1,7 @@
 from dateutil.utils import today
 
 from expense import Expense
-import calendar
+
 from datetime import date
 
 budget = 0
@@ -19,7 +19,11 @@ def main():
         print("3. Track budget")
         print("4. Save expenses")
         print("5. Exit")
-        user_choice = int(input("Enter your choice: "))
+        try:
+            user_choice = int(input("Enter your choice: "))
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 and 5.")
+            continue
         if user_choice == 1:
             expense = get_user_expense()
             print(f"you have entered {expense}")
@@ -40,10 +44,12 @@ def main():
 
 
 def get_user_expense():
-    expense_name = input("Enter expense name: ")
-    print("You entered: " + expense_name)
-    amount = input("Enter expense amount: ")
-    print("You entered: " + amount)
+    try:
+        expense_name = input("Enter expense name: ")        
+        amount = float(input("Enter expense amount: "))
+    except ValueError:
+        print("Invalid input. Please enter a valid amount.")
+        return None
     expense_categories = [
         "Food",
         "utilities",
@@ -68,25 +74,30 @@ def get_user_expense():
                 print("Invalid category. Please try again!")
 
 def save_expense_to_file(expense, file_path):
-    with open(file_path, "a") as file:
-         file.write(f"{{'date': '{expense.date}', 'category': '{expense.category}', 'amount':{expense.amount}, 'description':'{expense.desc}' }}" + "\n")
-    print(f"Expense saved to {file_path} successfully!")
+    try:
+        with open(file_path, "a") as file:
+            file.write(f"{{'date': '{expense.date}', 'category': '{expense.category}', 'amount':{expense.amount}, 'description':'{expense.desc}' }}" + "\n")
+        print(f"Expense saved to {file_path} successfully!")
+    except Exception as e:
+         print(f"Error saving expenses to {file_path}.")
 
 def read_expenses_from_file(file_path):
-
-    list_of_expenses = []    
-    with open(file_path, "r") as file:
-        lines = file.readlines()
-        for line in lines:
-            expense_dict = eval(line)
-            expense = Expense(
-                desc=expense_dict['description'],
-                category=expense_dict['category'],
-                amount=expense_dict['amount'],
-                date=expense_dict['date']
-            )
-          
-            list_of_expenses.append(expense)
+    try:
+        list_of_expenses = []    
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                expense_dict = eval(line)
+                expense = Expense(
+                    desc=expense_dict['description'],
+                    category=expense_dict['category'],
+                    amount=expense_dict['amount'],
+                    date=expense_dict['date']
+                )
+            
+                list_of_expenses.append(expense)
+    except (IOError, json.JSONDecodeError):
+        print(f"Error reading expenses from {file_path}.")            
 
     print("Expenses read from file: ")
     for expense in list_of_expenses:
@@ -97,15 +108,23 @@ def read_expenses_from_file(file_path):
 def track_budget( file_path):
     global budget
     if budget == 0:
-        budget = float(input("Enter your budget: "))
+        try:
+            budget = float(input("Enter your budget: "))
+        except ValueError:
+            print("Invalid input. Please enter a valid amount.")
+            return
 
     total_expenses = 0
-    with open(file_path, "r") as file:
-        lines = file.readlines()
-        for line in lines:
-            expense_dict = eval(line)            
-            total_expenses += float(expense_dict['amount'])
-
+    try:
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                expense_dict = eval(line)            
+                total_expenses += float(expense_dict['amount'])
+    except (IOError, json.JSONDecodeError):
+        print(f"Error reading expenses from {file_path}.")
+        return
+    
     if total_expenses > budget:
         print("You have exceeded your budget!\n\n")
     else:

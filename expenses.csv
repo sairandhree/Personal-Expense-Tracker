@@ -2,3 +2,4 @@
 {'date': '2024-12-21', 'category': 'Work', 'amount':22, 'description':'bb' }
 {'date': '2024-12-21', 'category': 'Work', 'amount':33, 'description':'cc' }
 {'date': '2024-12-21', 'category': 'Fun', 'amount':44, 'description':'dd' }
+{'date': '2024-12-22', 'category': 'Misc', 'amount':55.0, 'description':'ee' }
